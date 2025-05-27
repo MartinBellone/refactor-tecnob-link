@@ -23,11 +23,17 @@ function handleGet($conn)
 function handlePost($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (createStudent($conn, $input['fullname'], $input['email'], $input['age'])) 
+    
+    $result = createStudent($conn, $input['fullname'], $input['email'], $input['age']);
     {
+    if ($resutl == true)
         echo json_encode(["message" => "Estudiante agregado correctamente"]);
-    } 
-    else 
+    }
+    elseif ($result === "duplicate") {
+        http_response_code(409); // Conflicto
+        echo json_encode(["error" => "El email ya está registrado"]); 
+    }
+    else
     {
         http_response_code(500);
         echo json_encode(["error" => "No se pudo agregar"]);

@@ -24,11 +24,13 @@ function setupFormHandler()
             {
                 await studentsAPI.create(student);
             }
+            hideError();
             clearForm();
             loadStudents();
         }
         catch (err)
         {
+            showError(err.message);
             console.error(err.message);
         }
     });
@@ -129,4 +131,12 @@ async function confirmDelete(id)
         console.error('Error al borrar:', err.message);
     }
 }
-  
+function showError(message) {
+    const box = document.getElementById("errorBox");
+    box.textContent = message;
+    box.style.display = "block";
+}
+function hideError() {
+    const box = document.getElementById("errorBox");
+    box.style.display = "none";
+}

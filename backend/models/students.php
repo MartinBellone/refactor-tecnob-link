@@ -19,8 +19,16 @@ function createStudent($conn, $fullname, $email, $age)
     $sql = "INSERT INTO students (fullname, email, age) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssi", $fullname, $email, $age);
-    return $stmt->execute();
-}
+    try {
+        $stmt->execute();
+        return true;
+    } catch (mysqli_sql_exception $e) {
+        if ($e->getCode() == 1062) {
+            return "duplicate";
+        } else {
+            return false;
+        }
+    }
 
 function updateStudent($conn, $id, $fullname, $email, $age) 
 {
