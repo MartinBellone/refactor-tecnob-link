@@ -29,6 +29,7 @@ function createStudent($conn, $fullname, $email, $age)
             return false;
         }
     }
+}
 
 function updateStudent($conn, $id, $fullname, $email, $age) 
 {
@@ -45,4 +46,5 @@ function deleteStudent($conn, $id)
     $stmt->bind_param("i", $id);
     return $stmt->execute();
 }
+
 ?>

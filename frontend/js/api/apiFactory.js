@@ -12,10 +12,16 @@ export function createAPI(moduleName, config = {})
         });
 
         const json = await res.json().catch(() => ({}));
+        const text = await res.text();
+        try {
+            json = JSON.parse(text);
+        } catch {
+            json = null;
+        }
 
         if (!res.ok) {
-            // Mandamos el mensaje de error si existe
-            throw new Error(json.error || `Error en ${method}`);
+            const message = (json && json.error) ? json.error : text || `Error en ${method}`;
+            throw new Error(message);
         }
 
         return json;

@@ -26,17 +26,18 @@ function handlePost($conn)
     
     $result = createStudent($conn, $input['fullname'], $input['email'], $input['age']);
     {
-    if ($resutl == true)
+    if ($result == true)
         echo json_encode(["message" => "Estudiante agregado correctamente"]);
-    }
-    elseif ($result === "duplicate") {
-        http_response_code(409); // Conflicto
-        echo json_encode(["error" => "El email ya está registrado"]); 
-    }
     else
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo agregar"]);
+         if ($result === "duplicate") {
+            http_response_code(409); // Conflicto
+            echo json_encode(["error" => "El email ya está registrado"]); 
+        }
+        else
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo agregar"]);
+        }
     }
 }
 

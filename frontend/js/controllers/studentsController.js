@@ -30,7 +30,7 @@ function setupFormHandler()
         }
         catch (err)
         {
-            showError(err.message);
+            showError();
             console.error(err.message);
         }
     });
@@ -131,9 +131,9 @@ async function confirmDelete(id)
         console.error('Error al borrar:', err.message);
     }
 }
-function showError(message) {
+function showError() {
     const box = document.getElementById("errorBox");
-    box.textContent = message;
+    box.textContent = "Error: email ya registrado";
     box.style.display = "block";
 }
 function hideError() {
