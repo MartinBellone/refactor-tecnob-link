@@ -23,11 +23,10 @@ function createStudent($conn, $fullname, $email, $age)
         $stmt->execute();
         return true;
     } catch (mysqli_sql_exception $e) {
-        if ($e->getCode() == 1062) {
+         if ($e->getCode() == 1062) {
             return "duplicate";
-        } else {
-            return false;
         }
+        return false;
     }
 }
 

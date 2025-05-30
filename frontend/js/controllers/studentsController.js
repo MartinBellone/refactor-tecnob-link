@@ -13,25 +13,24 @@ function setupFormHandler()
     {
         e.preventDefault();
         const student = getFormData();
-    
-        try 
-        {
-            if (student.id) 
-            {
+         console.log("Formulario enviado con datos:", student);
+
+        try {
+            if (student.id) {
                 await studentsAPI.update(student);
-            } 
-            else 
-            {
+                console.log("Estudiante actualizado correctamente");
+                showSuccess("Estudiante actualizado correctamente");
+            } else {
                 await studentsAPI.create(student);
+                console.log("Estudiante agregado correctamente");
+                showSuccess("Estudiante agregado correctamente");
             }
-            hideError();
+
             clearForm();
             loadStudents();
-        }
-        catch (err)
-        {
-            showError();
-            console.error(err.message);
+        } catch (err) {
+            console.error("Error capturado en catch:", err.message);
+            showError(err.message || "Error al guardar el estudiante");
         }
     });
 }
@@ -131,12 +130,34 @@ async function confirmDelete(id)
         console.error('Error al borrar:', err.message);
     }
 }
-function showError() {
-    const box = document.getElementById("errorBox");
-    box.textContent = "Error: email ya registrado";
-    box.style.display = "block";
+function showSuccess(msg) {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = msg;
+        $mensaje.className = "alert alert-success";
+        $mensaje.classList.remove("d-none");
+    }
+     setTimeout(() => {
+            hideMessage();
+        }, 3000);
 }
-function hideError() {
-    const box = document.getElementById("errorBox");
-    box.style.display = "none";
+
+function showError(msg) {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = msg;
+        $mensaje.className = "alert alert-danger";
+        $mensaje.classList.remove("d-none");
+    }
+    setTimeout(() => {
+            hideMessage();
+        }, 4000);
+}
+
+function hideMessage() {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = "";
+        $mensaje.classList.add("d-none");
+    }
 }

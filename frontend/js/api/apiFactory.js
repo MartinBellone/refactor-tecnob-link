@@ -11,20 +11,23 @@ export function createAPI(moduleName, config = {})
             body: JSON.stringify(data)
         });
 
-        const json = await res.json().catch(() => ({}));
-        const text = await res.text();
+         let json = {};
         try {
-            json = JSON.parse(text);
-        } catch {
-            json = null;
+            json = await res.json();
+            console.log("Respuesta JSON recibida:", json);
+        } catch (err) {
+            console.warn("Respuesta no es JSON válida");
         }
+
+        console.log(`Status HTTP: ${res.status}`);
 
         if (!res.ok) {
-            const message = (json && json.error) ? json.error : text || `Error en ${method}`;
-            throw new Error(message);
-        }
+            const msg = json.error || json.message || `Error en ${method}`;
+            console.error("ERROR DESDE BACKEND:", msg);
+            throw new Error(msg);
+    }
 
-        return json;
+        return json; // solo se ejecuta si res.ok es true
     }
 
     return {
