@@ -23,10 +23,12 @@ function setupSubjectFormHandler()
             if (subject.id) 
             {
                 await subjectsAPI.update(subject);
+                showSuccess("Materia actualizada correctamente");
             }
             else
             {
                 await subjectsAPI.create(subject);
+                showSuccess("Materia agregada correctamente");   
             }
             
             form.reset();
@@ -35,7 +37,7 @@ function setupSubjectFormHandler()
         }
         catch (err)
         {
-            console.error(err.message);
+            showError(err.message || "Error al guardar la materia");   
         }
   });
 }
@@ -106,10 +108,42 @@ async function confirmDeleteSubject(id)
     try
     {
         await subjectsAPI.remove(id);
+        showSuccess("Materia borrada correctamente");
         loadSubjects();
     }
     catch (err)
     {
         console.error('Error al borrar materia:', err.message);
+    }
+}
+function showSuccess(msg) {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = msg;
+        $mensaje.className = "alert alert-success";
+        $mensaje.classList.remove("d-none");
+    }
+     setTimeout(() => {
+            hideMessage();
+        }, 3000);
+}
+
+function showError(msg) {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = msg;
+        $mensaje.className = "alert alert-danger";
+        $mensaje.classList.remove("d-none");
+    }
+    setTimeout(() => {
+            hideMessage();
+        }, 4000);
+}
+
+function hideMessage() {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = "";
+        $mensaje.classList.add("d-none");
     }
 }

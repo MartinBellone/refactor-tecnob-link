@@ -23,14 +23,18 @@ function handleGet($conn)
 function handlePost($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (createSubject($conn, $input['name'])) 
-    {
+
+    try {
+         createSubject($conn, $input['name']);
         echo json_encode(["message" => "Materia creada correctamente"]);
-    } 
-    else 
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo crear"]);
+    } catch (mysqli_sql_exception $e) {
+        if ($e->getCode() == 1062) {
+            http_response_code(409); // Conflicto
+            echo json_encode(["error" => "La materia ya está registrada"]);
+        } else {
+            http_response_code(500); // Otro error
+            echo json_encode(["error" => "Error al agregar materia"]);
+        }
     }
 }
 
