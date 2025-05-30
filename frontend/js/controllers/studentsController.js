@@ -13,23 +13,18 @@ function setupFormHandler()
     {
         e.preventDefault();
         const student = getFormData();
-         console.log("Formulario enviado con datos:", student);
 
         try {
             if (student.id) {
                 await studentsAPI.update(student);
-                console.log("Estudiante actualizado correctamente");
                 showSuccess("Estudiante actualizado correctamente");
             } else {
                 await studentsAPI.create(student);
-                console.log("Estudiante agregado correctamente");
                 showSuccess("Estudiante agregado correctamente");
             }
-
             clearForm();
             loadStudents();
         } catch (err) {
-            console.error("Error capturado en catch:", err.message);
             showError(err.message || "Error al guardar el estudiante");
         }
     });
@@ -123,6 +118,7 @@ async function confirmDelete(id)
     try 
     {
         await studentsAPI.remove(id);
+        showSuccess("Estudiante borrado correctamente");
         loadStudents();
     } 
     catch (err) 

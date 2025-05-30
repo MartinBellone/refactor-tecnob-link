@@ -14,16 +14,12 @@ export function createAPI(moduleName, config = {})
          let json = {};
         try {
             json = await res.json();
-            console.log("Respuesta JSON recibida:", json);
         } catch (err) {
-            console.warn("Respuesta no es JSON válida");
-        }
 
-        console.log(`Status HTTP: ${res.status}`);
+        }
 
         if (!res.ok) {
             const msg = json.error || json.message || `Error en ${method}`;
-            console.error("ERROR DESDE BACKEND:", msg);
             throw new Error(msg);
     }
 

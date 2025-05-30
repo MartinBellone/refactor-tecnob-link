@@ -24,22 +24,18 @@ function handlePost($conn)
 {
     $input = json_decode(file_get_contents("php://input"), true);
     
-    $result = createStudent($conn, $input['fullname'], $input['email'], $input['age']);
-    
-    if ($result === true) {
-        error_log("DEBUG: Estudiante agregado correctamente");
+     try {
+        createStudent($conn, $input['fullname'], $input['email'], $input['age']);
         echo json_encode(["message" => "Estudiante agregado correctamente"]);
-    } 
-    else if ($result === "duplicate") {
-        error_log("DEBUG: Email duplicado detectado");
-        http_response_code(409); // Conflicto
-        echo json_encode(["error" => "El email ya está registrado"]); 
-    } 
-    else {
-        error_log("DEBUG: Error desconocido al agregar estudiante");
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo agregar"]);
+    } catch (mysqli_sql_exception $e) {
+        if ($e->getCode() == 1062) {
+            http_response_code(409); // Conflicto
+            echo json_encode(["error" => "El email ya está registrado"]);
+        } else {
+            http_response_code(500); // Otro error
+            echo json_encode(["error" => "Error al agregar estudiante"]);
         }
+    }
 }
 
 function handlePut($conn) {
