@@ -17,7 +17,6 @@ export function createAPI(moduleName, config = {})
         } catch (err) {
 
         }
-
         if (!res.ok) {
             const msg = json.error || json.message || `Error en ${method}`;
             throw new Error(msg);

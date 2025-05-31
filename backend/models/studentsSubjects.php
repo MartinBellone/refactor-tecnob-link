@@ -9,12 +9,11 @@ function assignSubjectToStudent($conn, $student_id, $subject_id, $approved)
     $stmtCheck->execute();
     $result = $stmtCheck->get_result();
   
-
     if ($result->num_rows > 0) {
         return "duplicate"; // Ya está inscripto
     }
     $stmtCheck->close();
-    
+
     $sql = "INSERT INTO students_subjects (student_id, subject_id, approved) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iii", $student_id, $subject_id, $approved);

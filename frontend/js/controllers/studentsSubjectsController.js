@@ -59,7 +59,6 @@ function setupFormHandler()
                 await studentsSubjectsAPI.create(relation);
                 showSuccess("Asignacion creada correctamente");
             }
-
             clearForm();
             loadRelations();
         } catch (err) {
