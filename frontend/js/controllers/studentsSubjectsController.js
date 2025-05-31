@@ -51,26 +51,23 @@ function setupFormHandler()
 
         const relation = getFormData();
 
-        try 
-        {
-            if (relation.id) 
-            {
+        try {
+            if (relation.id) {
                 await studentsSubjectsAPI.update(relation);
-            } 
-            else 
-            {
+                showSuccess("Asignacion actualizada correctamente");
+            } else {
                 await studentsSubjectsAPI.create(relation);
+                showSuccess("Asignacion creada correctamente");
             }
+
             clearForm();
             loadRelations();
-        } 
-        catch (err) 
-        {
-            console.error('Error guardando relación:', err.message);
+        } catch (err) {
+            // Muestra mensaje de error (por ejemplo: relación duplicada)
+            showError(err.message || "Error al asignar estudiante a materia");
         }
     });
 }
-
 function getFormData() 
 {
     return{
@@ -180,10 +177,42 @@ async function confirmDelete(id)
     try 
     {
         await studentsSubjectsAPI.remove(id);
+        showSuccess("Inscripción borrada correctamente");
         loadRelations();
     } 
     catch (err) 
     {
         console.error('Error al borrar inscripción:', err.message);
+    }
+}
+function showSuccess(msg) {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = msg;
+        $mensaje.className = "alert alert-success";
+        $mensaje.classList.remove("d-none");
+    }
+     setTimeout(() => {
+            hideMessage();
+        }, 3000);
+}
+
+function showError(msg) {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = msg;
+        $mensaje.className = "alert alert-danger";
+        $mensaje.classList.remove("d-none");
+    }
+    setTimeout(() => {
+            hideMessage();
+        }, 4000);
+}
+
+function hideMessage() {
+    const $mensaje = document.getElementById("mensaje");
+    if ($mensaje) {
+        $mensaje.textContent = "";
+        $mensaje.classList.add("d-none");
     }
 }

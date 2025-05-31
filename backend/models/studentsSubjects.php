@@ -1,6 +1,20 @@
 <?php
 function assignSubjectToStudent($conn, $student_id, $subject_id, $approved) 
-{
+{   
+
+    // Verificar si ya existe la relación
+    $sqlCheck = "SELECT id FROM students_subjects WHERE student_id = ? AND subject_id = ?";
+    $stmtCheck = $conn->prepare($sqlCheck);
+    $stmtCheck->bind_param("ii", $student_id, $subject_id);
+    $stmtCheck->execute();
+    $result = $stmtCheck->get_result();
+  
+
+    if ($result->num_rows > 0) {
+        return "duplicate"; // Ya está inscripto
+    }
+    $stmtCheck->close();
+    
     $sql = "INSERT INTO students_subjects (student_id, subject_id, approved) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iii", $student_id, $subject_id, $approved);

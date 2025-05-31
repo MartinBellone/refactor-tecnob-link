@@ -15,14 +15,16 @@ function handleGet($conn)
 function handlePost($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (assignSubjectToStudent($conn, $input['student_id'], $input['subject_id'], $input['approved'])) 
-    {
-        echo json_encode(["message" => "Asignación realizada"]);
-    } 
-    else 
-    {
+    $result = assignSubjectToStudent($conn, $input['student_id'], $input['subject_id'], $input['approved']);
+
+    if ($result === true) {
+        echo json_encode(["message" => "Inscripción realizada correctamente"]);
+    } elseif ($result === "duplicate") {
+        http_response_code(409);
+        echo json_encode(["error" => "El estudiante ya está inscripto en esa materia"]);
+    } else {
         http_response_code(500);
-        echo json_encode(["error" => "Error al asignar"]);
+        echo json_encode(["error" => "Error al inscribir"]);
     }
 }
 
