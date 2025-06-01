@@ -123,7 +123,7 @@ async function confirmDelete(id)
     } 
     catch (err) 
     {
-        console.error('Error al borrar:', err.message);
+        showError('Error: el estudiante esta inscripto a alguna materia y no se puede borrar');
     }
 }
 function showSuccess(msg) {

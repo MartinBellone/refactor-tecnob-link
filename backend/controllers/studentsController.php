@@ -54,14 +54,16 @@ function handlePut($conn) {
 function handleDelete($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (deleteStudent($conn, $input['id'])) 
-    {
-        echo json_encode(["message" => "Eliminado correctamente"]);
-    } 
-    else 
-    {
+    $result = deleteStudent($conn, $input['id']);
+
+    if ($result === true) {
+        echo json_encode(["message" => "Estudiante eliminado"]);
+    } elseif ($result === "has_relations") {
+        http_response_code(409);
+        echo json_encode(["error" => "No se puede eliminar: el estudiante está inscripto en materias"]);
+    } else {
         http_response_code(500);
-        echo json_encode(["error" => "No se pudo eliminar"]);
+        echo json_encode(["error" => "Error al eliminar estudiante"]);
     }
 }
 ?>

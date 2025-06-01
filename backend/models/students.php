@@ -30,12 +30,28 @@ function updateStudent($conn, $id, $fullname, $email, $age)
     return $stmt->execute();
 }
 
-function deleteStudent($conn, $id) 
+function deleteStudent($conn, $student_id) 
 {
+    if (!canDeleteStudent($conn, $student_id)) {
+        return "has_relations";
+    } 
+    //verifica si tiene relaciones
+    // Si no tiene relaciones, procede a eliminar
     $sql = "DELETE FROM students WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
+    $stmt->bind_param("i", $student_id);
     return $stmt->execute();
 }
+function canDeleteStudent($conn, $student_id) {
+    $sql = "SELECT COUNT(*) FROM students_subjects WHERE student_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $count = 0;
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
 
+    return $count == 0; // true si NO tiene relaciones
+}
 ?>
