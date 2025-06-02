@@ -113,7 +113,7 @@ async function confirmDeleteSubject(id)
     }
     catch (err)
     {
-        console.error('Error al borrar materia:', err.message);
+        showError('Error: Materia con estudiantes asignados');
     }
 }
 function showSuccess(msg) {

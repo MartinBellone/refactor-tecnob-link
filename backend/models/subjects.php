@@ -32,9 +32,25 @@ function updateSubject($conn, $id, $name)
 
 function deleteSubject($conn, $id) 
 {
+    if (!canDeleteSubject($conn, $id)) {
+        return "has_relations";
+    } 
+
     $sql = "DELETE FROM subjects WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     return $stmt->execute();
+}
+function canDeleteSubject($conn, $id) {
+    $sql = "SELECT COUNT(*) FROM students_subjects WHERE subject_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $count = 0;
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+
+    return $count == 0; // true si NO tiene relaciones
 }
 ?>
