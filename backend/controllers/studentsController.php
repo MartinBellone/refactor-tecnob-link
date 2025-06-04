@@ -25,9 +25,12 @@ function handlePost($conn)
     $input = json_decode(file_get_contents("php://input"), true);
     
      try {
-        createStudent($conn, $input['fullname'], $input['email'], $input['age']);
-        echo json_encode(["message" => "Estudiante agregado correctamente"]);
-    } catch (mysqli_sql_exception $e) {
+       $result=createStudent($conn, $input['fullname'], $input['email'], $input['age']);
+        if ($result)
+            echo json_encode(["message" => "Estudiante agregado correctamente"]);
+        else
+            throw new Exception("Error al agregar estudiante",$result->errno);
+    } catch (Exception $e) {
         if ($e->getCode() == 1062) {
             http_response_code(409); // Conflicto
             echo json_encode(["error" => "El email ya está registrado"]);

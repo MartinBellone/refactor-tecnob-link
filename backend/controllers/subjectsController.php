@@ -25,9 +25,12 @@ function handlePost($conn)
     $input = json_decode(file_get_contents("php://input"), true);
 
     try {
-         createSubject($conn, $input['name']);
-        echo json_encode(["message" => "Materia creada correctamente"]);
-    } catch (mysqli_sql_exception $e) {
+         $result= createSubject($conn, $input['name']);
+         if ($result)
+            echo json_encode(["message" => "Materia creada correctamente"]);
+        else
+            throw new Exception("Error al agregar materia", $result->errno);
+    } catch (Exception $e) {
         if ($e->getCode() == 1062) {
             http_response_code(409); // Conflicto
             echo json_encode(["error" => "La materia ya está registrada"]);
